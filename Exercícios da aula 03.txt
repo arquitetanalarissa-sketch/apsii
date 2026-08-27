@@ -1,0 +1,185 @@
+1 - Funcionário
+
+public class Funcionario {
+    private String nome;
+    private String matricula;
+    private double salarioBase;
+    private String dataAdmissao;
+
+    public Funcionario(String nome, String matricula, double salarioBase, String dataAdmissao) {
+        this.nome = nome;
+        this.matricula = matricula;
+        this.salarioBase = salarioBase;
+        this.dataAdmissao = dataAdmissao;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getMatricula() {
+        return matricula;
+    }
+
+    public double getSalarioBase() {
+        return salarioBase;
+    }
+
+    public String getDataAdmissao() {
+        return dataAdmissao;
+    }
+
+    public double calcularSalario() {
+        return salarioBase;
+    }
+
+    public double calcularDesconto() {
+        return salarioBase * 0.08;
+    }
+
+    @Override
+    public String toString() {
+        double liquido = calcularSalario() - calcularDesconto();
+        return String.format("%s [%s] | Salário: R$ %.2f | Desconto: R$ %.2f | Líquido: R$ %.2f", 
+                nome, matricula, calcularSalario(), calcularDesconto(), liquido);
+    }
+}
+
+2 - FuncionarioCLT
+
+public class FuncionarioCLT extends Funcionario {
+    private double valeTransporte;
+    private double valeAlimentacao;
+
+    public FuncionarioCLT(String nome, String matricula, double salarioBase, String dataAdmissao, 
+                          double valeTransporte, double valeAlimentacao) {
+        super(nome, matricula, salarioBase, dataAdmissao);
+        this.valeTransporte = valeTransporte;
+        this.valeAlimentacao = valeAlimentacao;
+    }
+
+    @Override
+    public double calcularSalario() {
+        return super.calcularSalario() + valeTransporte + valeAlimentacao;
+    }
+
+    @Override
+    public double calcularDesconto() {
+        return super.calcularDesconto() + 50.0;
+    }
+
+    public double getValeTransporte() {
+        return valeTransporte;
+    }
+
+    public double getValeAlimentacao() {
+        return valeAlimentacao;
+    }
+}
+
+3 - Gerente
+
+public class Gerente extends FuncionarioCLT {
+    private int tamanhoEquipe;
+    private double percentualBonus; // Ex: 0.20 para 20%
+
+    public Gerente(String nome, String matricula, double salarioBase, String dataAdmissao, 
+                   double valeTransporte, double valeAlimentacao, int tamanhoEquipe, double percentualBonus) {
+        super(nome, matricula, salarioBase, dataAdmissao, valeTransporte, valeAlimentacao);
+        this.tamanhoEquipe = tamanhoEquipe;
+        this.percentualBonus = percentualBonus;
+    }
+
+    @Override
+    public double calcularSalario() {
+        double bonus = getSalarioBase() * percentualBonus;
+        return super.calcularSalario() + bonus;
+    }
+
+    @Override
+    public double calcularDesconto() {
+        double desconto = super.calcularDesconto();
+        if (tamanhoEquipe > 10) {
+            desconto += 100.0;
+        }
+        return desconto;
+    }
+
+    public int getTamanhoEquipe() {
+        return tamanhoEquipe;
+    }
+
+    public double getPercentualBonus() {
+        return percentualBonus;
+    }
+}
+
+4 - Estagiário
+
+public class Estagiario extends Funcionario {
+    private double valorBolsaAuxilio;
+    private int cargaHorariaSemanal;
+
+    public Estagiario(String nome, String matricula, double salarioBase, String dataAdmissao, 
+                      double valorBolsaAuxilio, int cargaHorariaSemanal) {
+        super(nome, matricula, salarioBase, dataAdmissao);
+        this.valorBolsaAuxilio = valorBolsaAuxilio;
+        this.cargaHorariaSemanal = cargaHorariaSemanal;
+    }
+
+    @Override
+    public double calcularSalario() {
+        return valorBolsaAuxilio;
+    }
+
+    @Override
+    public double calcularDesconto() {
+        return 0.0;
+    }
+
+    public double getValorBolsaAuxilio() {
+        return valorBolsaAuxilio;
+    }
+
+    public int getCargaHorariaSemanal() {
+        return cargaHorariaSemanal;
+    }
+}
+
+5 - TesteFuncionarios
+
+public class TesteFuncionarios {
+    public static void main(String[] args) {
+        Funcionario f1 = new Funcionario("Ana Costa", "F001", 2500.0, "01/03/2020");
+        FuncionarioCLT f2 = new FuncionarioCLT("Bruno Reis", "C001", 3000.0, "10/06/2021", 220.0, 400.0);
+        Gerente f3 = new Gerente("Carla Mendes", "G001", 8000.0, "15/01/2018", 300.0, 500.0, 12, 0.20);
+        Estagiario f4 = new Estagiario("Diego Alves", "E001", 0.0, "05/08/2024", 1500.0, 20);
+
+        System.out.println(f1);
+        System.out.println(f2);
+        System.out.println(f3);
+        System.out.println(f4);
+    }
+}
+
+6 - Desafio
+
+public class Diretor extends Gerente {
+    private double participacaoLucros;
+
+    public Diretor(String nome, String matricula, double salarioBase, String dataAdmissao, 
+                   double valeTransporte, double valeAlimentacao, int tamanhoEquipe, 
+                   double percentualBonus, double participacaoLucros) {
+        super(nome, matricula, salarioBase, dataAdmissao, valeTransporte, valeAlimentacao, tamanhoEquipe, percentualBonus);
+        this.participacaoLucros = participacaoLucros;
+    }
+
+    @Override
+    public double calcularSalario() {
+        return super.calcularSalario() + participacaoLucros;
+    }
+
+    public double getParticipacaoLucros() {
+        return participacaoLucros;
+    }
+}
